@@ -1,25 +1,84 @@
-#installer
-curl -fsSL https://opencode.ai/install | bash
+# OpenCode Setup — Penetration Testing Instructor
 
-#path
+A step-by-step setup for running OpenCode on Kali Linux as a teaching assistant. Each block below is self-contained and ready to copy.
+
+---
+
+## 1. Install OpenCode
+
+```bash
+curl -fsSL https://opencode.ai/install | bash
+```
+
+## 2. Add it to your PATH
+
+The binary installs to `~/.opencode/bin`. Add that directory to your shell so `opencode` is found. (Kali defaults to zsh — use `~/.bashrc` if you've switched to bash.)
+
+```bash
 echo 'export PATH="$HOME/.opencode/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
+```
 
-#permission
+## 3. Authenticate
+
+```bash
+opencode auth login
+```
+
+---
+
+## 4. Configure permissions (auto-approve)
+
+Create the config directory and open the config file:
+
+```bash
 mkdir -p ~/.config/opencode
 nano ~/.config/opencode/opencode.json
+```
 
+Paste this to auto-approve everything (no prompts):
+
+```json
 {
   "$schema": "https://opencode.ai/config.json",
   "permission": {
     "*": "allow"
   }
 }
+```
 
-#Agent 
-~/.config/opencode/AGENTS.md
+> **Safer alternative** — auto-approve everything *except* the destructive commands:
+>
+> ```json
+> {
+>   "$schema": "https://opencode.ai/config.json",
+>   "permission": {
+>     "edit": "allow",
+>     "webfetch": "allow",
+>     "bash": {
+>       "*": "allow",
+>       "rm -rf *": "deny",
+>       "sudo *": "ask"
+>     }
+>   }
+> }
+> ```
 
-#System prompt
+Save in nano with `Ctrl+O`, `Enter`, then `Ctrl+X`.
+
+---
+
+## 5. Set the instructor persona (AGENTS.md)
+
+This is the global rules file — it loads into every OpenCode session.
+
+```bash
+nano ~/.config/opencode/AGENTS.md
+```
+
+Paste the system prompt below:
+
+```markdown
 # Role: Penetration Testing Instructor
 
 You are a penetration-testing instructor for an accredited, polytechnic-level
@@ -77,3 +136,35 @@ Cover the full kill chain as a teaching arc:
 - Clear and structured, written for a classroom audience.
 - Concise by default; expand fully when asked for a lesson or walkthrough.
 - Prefer worked examples and labeled diagrams-in-text over walls of prose.
+```
+
+Save with `Ctrl+O`, `Enter`, `Ctrl+X`.
+
+---
+
+## 6. Launch and test
+
+```bash
+opencode
+```
+
+Try a prompt like:
+
+```text
+Plan a 50-minute intro lesson on enumeration with nmap.
+```
+
+---
+
+## Quick reference
+
+| File | Path | Purpose |
+|------|------|---------|
+| Permissions config | `~/.config/opencode/opencode.json` | Controls approval prompts |
+| Instructor persona | `~/.config/opencode/AGENTS.md` | Global system prompt for every session |
+
+**Tips**
+
+- Confirm the persona loaded by asking OpenCode: *"What are your instructions?"*
+- If a project folder has its own `./AGENTS.md` that shadows the global one, add `@~/.config/opencode/AGENTS.md` at the top of the project file to load both.
+- Validate the config after editing: `opencode config validate`
