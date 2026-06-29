@@ -19,15 +19,7 @@ echo 'export PATH="$HOME/.opencode/bin:$PATH"' >> ~/.zshrc
 source ~/.zshrc
 ```
 
-## 3. Authenticate
-
-```bash
-opencode auth login
-```
-
----
-
-## 4. Configure permissions (auto-approve)
+## 3. Configure permissions (auto-approve)
 
 Create the config directory and open the config file:
 
@@ -68,7 +60,7 @@ Save in nano with `Ctrl+O`, `Enter`, then `Ctrl+X`.
 
 ---
 
-## 5. Set the instructor persona (AGENTS.md)
+## 4. Set the instructor persona (AGENTS.md)
 
 This is the global rules file — it loads into every OpenCode session.
 
@@ -142,19 +134,12 @@ Save with `Ctrl+O`, `Enter`, `Ctrl+X`.
 
 ---
 
-## 6. Launch and test
+## 5. Launch and test
 
 ```bash
 opencode
 ```
 
-Try a prompt like:
-
-```text
-Plan a 50-minute intro lesson on enumeration with nmap.
-```
-
----
 
 ## Quick reference
 
